@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <form class="search-form">
+    <input type="text" class="search"
+    placeholder="请输入城市名查找">
+    <ul class="suggestions">
+      <li>Filter for a city</li>
+      <li>or a state</li>
+    </ul>
+  </form>
+</div>
+  <script>
+  //.json 访问一个远程的json文件
+    const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+    const cities = [];
+    const searchInput = document.querySelector('.search');
+    // 新一代的ajax
+    // 浏览器缓存 css js img 等静态文件
+    fetch(endpoint)//去把数据请求回来
+     .then(blob => blob.json())//请求数据都需要花些时间，then等它下载完
+     .then(data => {
+       cities.push(...data);
+      //  console.log(cities);
+        document.querySelector('.suggestions').innerHTML = data.map(item => {
+          // console.log(item);
+          return `
+            <li>${item.city}</li>
+          `;
+        }).join('');
+
+       searchInput.addEventListener('input', () => {
+         const keyword = searchInput.value;
+         document.querySelector('.suggestions').innerHTML = data.filter(item => {
+           return item.city.indexOf(keyword) > -1;
+         }).map(item => {
+         // console.log(item);
+           return `
+             <li>${item.city}</li>
+           `;
+         }).join('');
+       });
+    });
+  </script>
+</body>
+</html>
